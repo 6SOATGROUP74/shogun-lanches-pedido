@@ -1,6 +1,5 @@
 package com.example.demo.adapter.controller;
 
-import com.example.demo.core.domain.Pagamento;
 import com.example.demo.infrastructure.integration.shogun.pagamento.ShogunPagamentoClient;
 import com.example.demo.infrastructure.integration.shogun.pagamento.response.PagamentoResponse;
 import com.example.demo.infrastructure.integration.shogun.request.PagamentoRequest;
@@ -17,13 +16,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/v1/pedido")
-public class TestController {
+public class PagamentoController {
 
-    private static final Logger logger = LoggerFactory.getLogger(TestController.class);
+    private static final Logger logger = LoggerFactory.getLogger(PagamentoController.class);
 
     private final ShogunPagamentoClient shogunPagamentoClient;
 
-    public TestController(ShogunPagamentoClient shogunPagamentoClient, ShogunPagamentoClient shogunPagamentoClient1) {
+    public PagamentoController(ShogunPagamentoClient shogunPagamentoClient, ShogunPagamentoClient shogunPagamentoClient1) {
         this.shogunPagamentoClient = shogunPagamentoClient1;
     }
 
