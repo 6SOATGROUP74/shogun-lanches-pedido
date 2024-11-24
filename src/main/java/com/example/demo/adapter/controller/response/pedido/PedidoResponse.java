@@ -12,6 +12,7 @@ public class PedidoResponse {
     private ClienteResponse cliente;
     private List<ComposicaoResponse> composicao;
     private String valorTotal;
+    private Long idPagamento;
     private String etapa;
     private String dataPedido;
     private String dataMudancaEtapa;

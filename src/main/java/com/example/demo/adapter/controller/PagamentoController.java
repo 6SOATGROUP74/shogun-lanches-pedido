@@ -1,8 +1,10 @@
 package com.example.demo.adapter.controller;
 
+import com.example.demo.adapter.gateway.interfaces.pagamento.RealizaPamentoAdapterPort;
+import com.example.demo.core.domain.Pedido;
 import com.example.demo.infrastructure.integration.shogun.pagamento.ShogunPagamentoClient;
+import com.example.demo.infrastructure.integration.shogun.pagamento.request.PagamentoRequest;
 import com.example.demo.infrastructure.integration.shogun.pagamento.response.PagamentoResponse;
-import com.example.demo.infrastructure.integration.shogun.request.PagamentoRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -21,9 +23,11 @@ public class PagamentoController {
     private static final Logger logger = LoggerFactory.getLogger(PagamentoController.class);
 
     private final ShogunPagamentoClient shogunPagamentoClient;
+    private final RealizaPamentoAdapterPort realizaPamentoAdapterPort;
 
-    public PagamentoController(ShogunPagamentoClient shogunPagamentoClient, ShogunPagamentoClient shogunPagamentoClient1) {
+    public PagamentoController(ShogunPagamentoClient shogunPagamentoClient, ShogunPagamentoClient shogunPagamentoClient1, RealizaPamentoAdapterPort realizaPamentoAdapterPort) {
         this.shogunPagamentoClient = shogunPagamentoClient1;
+        this.realizaPamentoAdapterPort = realizaPamentoAdapterPort;
     }
 
     @PostMapping
@@ -31,11 +35,11 @@ public class PagamentoController {
 
         logger.info("m=realizarPagamento, status=init,  msg=Realiza processo de pagamento, pagamentoRequest={}", pagamentoRequest);
 
-        PagamentoResponse pagamentoResponse = shogunPagamentoClient.realizarPagamento(pagamentoRequest).getBody();
+        Pedido pedidoPago = realizaPamentoAdapterPort.realizaPagamento(pagamentoRequest);
 
         logger.info("m=realizarPagamento, status=success,  msg=Processo de pagamento realizado com sucesso, pagamentoRequest={}", pagamentoRequest);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(pagamentoResponse);
+        return ResponseEntity.status(HttpStatus.CREATED).body(pedidoPago);
     }
 
     @GetMapping("/{pagamentoId}")

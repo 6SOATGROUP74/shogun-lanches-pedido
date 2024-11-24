@@ -21,11 +21,11 @@ public class ComposicaoEntity {
     @Column(name = "preco_unitario")
     private double precoUnitario;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "numero_pedido")
     private PedidoEntity pedido;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "id_produto")
     private ProdutoEntity produto;
 }
