@@ -1,8 +1,10 @@
 package com.example.demo.adapter.controller;
 
+import com.example.demo.adapter.controller.request.common.ProducaoRequest;
 import com.example.demo.adapter.controller.request.pedido.AtualizaPedidoRequest;
 import com.example.demo.adapter.controller.request.pedido.PedidoRequest;
 import com.example.demo.adapter.controller.request.pedido.mapper.PedidoMapper;
+import com.example.demo.adapter.gateway.interfaces.producao.EnviaPedidoParaProducaoAdapterPort;
 import com.example.demo.adapter.presenter.pedido.PedidoResponseMapper;
 import com.example.demo.core.domain.Pedido;
 import com.example.demo.core.usecase.interfaces.pedido.AlterarPedidoUseCasePort;
@@ -29,14 +31,16 @@ public class PedidoController {
     private final CriarPedidoUseCasePort criarPedidoUseCasePort;
     private final AlterarPedidoUseCasePort alterarPedidoUseCasePort;
     private final ConclusaoPedidoUsePort conclusaoPedidoUsePort;
+    private final EnviaPedidoParaProducaoAdapterPort enviaPedidoParaProducaoAdapterPort;
 
     private static final Logger logger = LogManager.getLogger(PedidoController.class);
 
-    public PedidoController(ListarPedidosUseCasePort listarPedidosUseCasePort, CriarPedidoUseCasePort criarPedidoUseCasePort, AlterarPedidoUseCasePort alterarPedidoUseCasePort, ConclusaoPedidoUsePort conclusaoPedidoUsePort) {
+    public PedidoController(ListarPedidosUseCasePort listarPedidosUseCasePort, CriarPedidoUseCasePort criarPedidoUseCasePort, AlterarPedidoUseCasePort alterarPedidoUseCasePort, ConclusaoPedidoUsePort conclusaoPedidoUsePort, EnviaPedidoParaProducaoAdapterPort enviaPedidoParaProducaoAdapterPort) {
         this.listarPedidosUseCasePort = listarPedidosUseCasePort;
         this.criarPedidoUseCasePort = criarPedidoUseCasePort;
         this.alterarPedidoUseCasePort = alterarPedidoUseCasePort;
         this.conclusaoPedidoUsePort = conclusaoPedidoUsePort;
+        this.enviaPedidoParaProducaoAdapterPort = enviaPedidoParaProducaoAdapterPort;
     }
 
     @GetMapping
@@ -66,6 +70,18 @@ public class PedidoController {
 
         logger.info("m=atualizaPedido, status=success,  msg=Pedido atualizado com sucesso, atualizaPedidoRequest={}", atualizaPedidoRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(PedidoResponseMapper.INSTANCE.mapFrom(pedido));
+    }
+
+    @PostMapping("/envia-pedido")
+    public ResponseEntity<?> enviaPedidoParaProducao(@RequestBody ProducaoRequest producaoRequest) {
+
+        logger.info("m=enviaPedidoParaProducao, msg=Enviando pedido para cozinha, producaoRequest={}", producaoRequest);
+
+        enviaPedidoParaProducaoAdapterPort.enviaPedido(producaoRequest);
+
+        logger.info("m=enviaPedidoParaProducao, msg=Pedido enviado com sucesso para a cozinha, producaoRequest={}", producaoRequest);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body("Pedido enviado com sucesso para a cozinha");
     }
 
     @PutMapping("/notifica-producao-concluida")
