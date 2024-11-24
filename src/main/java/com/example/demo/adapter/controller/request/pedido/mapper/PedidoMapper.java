@@ -20,6 +20,7 @@ public interface PedidoMapper {
     Pedido mapFrom(PedidoRequest pedidoRequest);
 
     @Mapping(source = "numeroPedido", target = "numeroPedido")
+    @Mapping(source = "etapa", target = "etapa")
     Pedido mapFrom(AtualizaPedidoRequest atualizaPedidoRequest);
 
     @Mapping(target = "numeroPedido", source = "numeroPedido")

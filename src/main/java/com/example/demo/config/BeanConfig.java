@@ -9,6 +9,7 @@ import com.example.demo.adapter.gateway.interfaces.pedido.SalvarPedidoAdapterPor
 import com.example.demo.adapter.gateway.interfaces.produto.GerenciarProdutoAdapterPort;
 import com.example.demo.core.usecase.impl.AlterarPedidoUseCase;
 import com.example.demo.core.usecase.impl.BuscarPedidoUseCase;
+import com.example.demo.core.usecase.impl.ConclusaoPedidoUserCase;
 import com.example.demo.core.usecase.impl.CriarPedidoUseCase;
 import com.example.demo.core.usecase.impl.GerenciarProdutoUseCase;
 import com.example.demo.core.usecase.impl.IncluirClienteUseCase;
@@ -19,6 +20,7 @@ import com.example.demo.core.usecase.interfaces.cliente.IncluirClienteUseCasePor
 import com.example.demo.core.usecase.interfaces.cliente.RecuperarClienteUseCasePort;
 import com.example.demo.core.usecase.interfaces.pedido.AlterarPedidoUseCasePort;
 import com.example.demo.core.usecase.interfaces.pedido.BuscarPedidoUseCasePort;
+import com.example.demo.core.usecase.interfaces.pedido.ConclusaoPedidoUsePort;
 import com.example.demo.core.usecase.interfaces.pedido.CriarPedidoUseCasePort;
 import com.example.demo.core.usecase.interfaces.pedido.ListarPedidosUseCasePort;
 import com.example.demo.core.usecase.interfaces.pedido.SalvarPedidoUseCasePort;
@@ -70,5 +72,10 @@ public class BeanConfig {
     @Bean
     public CriarPedidoUseCasePort criarPedidoUseCasePort(SalvarPedidoAdapterPort salvarPedidoAdapterPort, GerenciarProdutoAdapterPort gerenciarProdutoAdapterPort, RecuperarClienteAdapterPort recuperarClienteAdapterPort, BuscarPedidoAdapterPort buscarPedidoAdapterPort){
         return new CriarPedidoUseCase(salvarPedidoAdapterPort, gerenciarProdutoAdapterPort, recuperarClienteAdapterPort, buscarPedidoAdapterPort);
+    }
+
+    @Bean
+    public ConclusaoPedidoUsePort conclusaoPedidoUsePort(SalvarPedidoUseCasePort salvarPedidoUseCasePort, BuscarPedidoUseCasePort buscarPedidoUseCasePort){
+        return new ConclusaoPedidoUserCase(salvarPedidoUseCasePort, buscarPedidoUseCasePort);
     }
 }

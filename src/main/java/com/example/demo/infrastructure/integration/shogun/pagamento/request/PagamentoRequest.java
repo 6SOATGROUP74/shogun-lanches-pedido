@@ -1,4 +1,4 @@
-package com.example.demo.infrastructure.integration.shogun.request;
+package com.example.demo.infrastructure.integration.shogun.pagamento.request;
 
 import com.example.demo.core.domain.FormasPagamentoEnum;
 import com.fasterxml.jackson.annotation.JsonProperty;

@@ -1,7 +1,7 @@
 package com.example.demo.infrastructure.integration.shogun.pagamento;
 
+import com.example.demo.infrastructure.integration.shogun.pagamento.request.PagamentoRequest;
 import com.example.demo.infrastructure.integration.shogun.pagamento.response.PagamentoResponse;
-import com.example.demo.infrastructure.integration.shogun.request.PagamentoRequest;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
