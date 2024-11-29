@@ -1,5 +1,7 @@
 package com.example.demo.mocks;
 
+import com.example.demo.adapter.controller.request.pedido.ComposicaoRequest;
+import com.example.demo.adapter.controller.request.pedido.PedidoRequest;
 import com.example.demo.core.domain.Cliente;
 import com.example.demo.core.domain.Composicao;
 import com.example.demo.core.domain.FormasPagamentoEnum;
@@ -114,4 +116,15 @@ public class PedidoHelper {
         return pagamentoResponse;
     }
 
+    public static PedidoRequest gerarPedidoRequest(){
+        Long idCliente = 1L;
+        ComposicaoRequest composicaoRequest = new ComposicaoRequest();
+        composicaoRequest.setIdProduto(1L);
+        composicaoRequest.setQuantidade(10);
+        PedidoRequest pedidoRequest = new PedidoRequest();
+        pedidoRequest.setIdCliente(idCliente);
+        pedidoRequest.setComposicao(Arrays.asList(composicaoRequest));
+
+        return pedidoRequest;
+    }
 }
