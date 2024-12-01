@@ -3,6 +3,7 @@ package com.example.demo.adapter.gateway.interfaces.impl;
 
 import com.example.demo.core.domain.Cliente;
 import com.example.demo.adapter.gateway.interfaces.cliente.RecuperarClienteAdapterPort;
+import com.example.demo.infrastructure.integration.shogun.cliente.ShogunClienteClient;
 import com.example.demo.infrastructure.repository.ClienteRepository;
 import com.example.demo.infrastructure.repository.presenter.ClienteEntityMapper;
 import lombok.AllArgsConstructor;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Component;
 public class RecuperarClienteAdapter implements RecuperarClienteAdapterPort {
 
     private final ClienteRepository clienteRepository;
+    private final ShogunClienteClient client;
 
     @Override
     public Cliente execute(String documentoCliente) {
@@ -21,7 +23,7 @@ public class RecuperarClienteAdapter implements RecuperarClienteAdapterPort {
 
     @Override
     public Cliente recuperarPorId(Long clientId) {
-        return ClienteEntityMapper.INSTANCE.mapFrom(clienteRepository.findById(clientId).get());
+        return ClienteEntityMapper.INSTANCE.mapFrom(client.buscaPorId());
     }
 
 }

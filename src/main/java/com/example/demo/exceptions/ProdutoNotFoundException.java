@@ -6,6 +6,9 @@ public class ProdutoNotFoundException extends RuntimeException {
         super(message);
     };
 
+    public ProdutoNotFoundException(){
+    };
+
     public ProdutoNotFoundException(final String message, final Throwable cause){
         super(message, cause);
     };
