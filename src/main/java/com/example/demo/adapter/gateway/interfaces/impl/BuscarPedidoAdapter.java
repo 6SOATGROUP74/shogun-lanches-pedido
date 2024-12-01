@@ -1,7 +1,7 @@
 package com.example.demo.adapter.gateway.interfaces.impl;
 
-import com.example.demo.core.domain.Pedido;
 import com.example.demo.adapter.gateway.interfaces.pedido.BuscarPedidoAdapterPort;
+import com.example.demo.core.domain.Pedido;
 import com.example.demo.infrastructure.repository.PedidoRepository;
 import com.example.demo.infrastructure.repository.presenter.PedidoEntityMapper;
 import org.slf4j.Logger;
@@ -20,7 +20,7 @@ public class BuscarPedidoAdapter implements BuscarPedidoAdapterPort {
     @Override
     public Pedido execute(Long idPedido) {
         logger.info("m=execute, msg=Consultando na base informações de pedido, pedidoId={}", idPedido);
-        return PedidoEntityMapper.INSTANCE.mapFrom(pedidoRepository.findById(idPedido).orElse(null));
+        return PedidoEntityMapper.INSTANCE.mapFrom(pedidoRepository.findById(idPedido).orElseThrow());
     }
 
     private Logger logger = LoggerFactory.getLogger(BuscarPedidoAdapter.class);
