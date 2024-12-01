@@ -1,76 +1,166 @@
 package com.example.demo.adapter.controller;
 
+import com.example.demo.adapter.controller.request.common.ProducaoRequest;
 import com.example.demo.adapter.controller.request.pedido.AtualizaPedidoRequest;
 import com.example.demo.adapter.controller.request.pedido.PedidoRequest;
+import com.example.demo.adapter.gateway.interfaces.producao.EnviaPedidoParaProducaoAdapterPort;
 import com.example.demo.core.domain.Pedido;
+import com.example.demo.core.domain.StatusPedido;
 import com.example.demo.core.usecase.interfaces.pedido.AlterarPedidoUseCasePort;
+import com.example.demo.core.usecase.interfaces.pedido.ConclusaoPedidoUsePort;
 import com.example.demo.core.usecase.interfaces.pedido.CriarPedidoUseCasePort;
 import com.example.demo.core.usecase.interfaces.pedido.ListarPedidosUseCasePort;
+import static com.example.demo.mocks.PedidoHelper.gerarPedido;
+import static com.example.demo.mocks.PedidoHelper.gerarPedidoRequest;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import org.mockito.MockitoAnnotations;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-
 class PedidoControllerTest {
 
-    @Mock
-    private ListarPedidosUseCasePort listarPedidosUseCasePort;
+    private MockMvc mockMvc;
 
-    @Mock
-    private CriarPedidoUseCasePort criarPedidoUseCasePort;
-
-    @Mock
-    private AlterarPedidoUseCasePort alterarPedidoUseCasePort;
-
-    @InjectMocks
-    private PedidoController pedidoController;
+    ListarPedidosUseCasePort listarPedidosUseCasePort = mock(ListarPedidosUseCasePort.class);
+    CriarPedidoUseCasePort criarPedidoUseCasePort = mock(CriarPedidoUseCasePort.class);
+    AlterarPedidoUseCasePort alterarPedidoUseCasePort = mock(AlterarPedidoUseCasePort.class);
+    ConclusaoPedidoUsePort conclusaoPedidoUsePort = mock(ConclusaoPedidoUsePort.class);
+    EnviaPedidoParaProducaoAdapterPort enviaPedidoParaProducaoAdapterPort = mock(EnviaPedidoParaProducaoAdapterPort.class);
 
 
     @BeforeEach
     void setup() {
-        MockitoAnnotations.openMocks(this);
+        openMocks = MockitoAnnotations.openMocks(this);
+        PedidoController pedidoController = new PedidoController(listarPedidosUseCasePort, criarPedidoUseCasePort, alterarPedidoUseCasePort, conclusaoPedidoUsePort, enviaPedidoParaProducaoAdapterPort);
+        mockMvc = MockMvcBuilders.standaloneSetup(pedidoController)
+                .setControllerAdvice(new CustomExceptionHandlers())
+                .addFilter((request, response, chain) -> {
+                    response.setCharacterEncoding("UTF-8");
+                    chain.doFilter(request, response);
+                }, "/*")
+                .build();
+    }
+
+    @AfterEach
+    void tearDown() throws Exception {
+        openMocks.close();
+    }
+
+    AutoCloseable openMocks;
+
+    @Test
+    public void deveListarPedidosComSucesso() throws Exception {
+        Pedido pedido = gerarPedido(StatusPedido.EM_PREPARACAO.name());
+
+        when(listarPedidosUseCasePort.listarOrdenados()).thenReturn(List.of(pedido));
+
+        mockMvc.perform(get("/v1/pedidos")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk());
+
+        verify(listarPedidosUseCasePort, times(1)).listarOrdenados();
+    }
+
+
+    @Test
+    public void deveSalvarPedidoComSucesso() throws Exception {
+        Pedido pedido = gerarPedido(StatusPedido.RECEBIDO.name());
+        PedidoRequest pedidoRequest = gerarPedidoRequest();
+
+        when(criarPedidoUseCasePort.criarPedido(pedido)).thenReturn(pedido);
+
+        mockMvc.perform(post("/v1/pedidos")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(pedidoRequest))
+                )
+                .andDo(print())
+                .andExpect(status().isCreated());
+
+        verify(criarPedidoUseCasePort, times(1)).criarPedido(any());
     }
 
     @Test
-    void listarPedidos_DeveRetornarStatusCreated() {
+    public void deveAtualizarPedidoComSucesso() throws Exception {
+        Pedido pedido = gerarPedido(StatusPedido.RECEBIDO.name());
+        Pedido pedidoAlterado = gerarPedido(StatusPedido.EM_PREPARACAO.name());
+        PedidoRequest pedidoRequest = gerarPedidoRequest();
+        AtualizaPedidoRequest atualizaPedidoRequest = new AtualizaPedidoRequest();
+        atualizaPedidoRequest.setNumeroPedido(1L);
+        atualizaPedidoRequest.setEtapa(StatusPedido.EM_PREPARACAO.name());
 
-        when(listarPedidosUseCasePort.listarOrdenados())
-                .thenReturn(List.of(new Pedido()));
+        when(alterarPedidoUseCasePort.execute(pedido)).thenReturn(pedidoAlterado);
 
-        ResponseEntity<?> responseEntity = pedidoController.listarPedidos();
+        mockMvc.perform(put("/v1/pedidos/atualiza")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(pedidoRequest))
+                )
+                .andDo(print())
+                .andExpect(status().isCreated());
 
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        verify(alterarPedidoUseCasePort, times(1)).execute(any());
     }
 
     @Test
-    void salvarPedido_DeveRetornarStatusCreated() {
+    public void deveEnviarPedidoComSucesso() throws Exception {
+        ProducaoRequest producaoRequest = new ProducaoRequest();
+        producaoRequest.setNumeroPedido(1L);
+        producaoRequest.setIdPagamento(1L);
+        producaoRequest.setStatusPedido(StatusPedido.EM_PREPARACAO.name());
 
-        when(criarPedidoUseCasePort.criarPedido(any(Pedido.class)))
-                .thenReturn(new Pedido());
+        doNothing().when(enviaPedidoParaProducaoAdapterPort).enviaPedido(producaoRequest);
 
-        ResponseEntity<?> responseEntity = pedidoController.salvarPedido(any(PedidoRequest.class));
+        mockMvc.perform(post("/v1/pedidos/envia-pedido")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(producaoRequest))
+                )
+                .andDo(print())
+                .andExpect(status().isCreated());
 
-        assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
+        verify(enviaPedidoParaProducaoAdapterPort, times(1)).enviaPedido(any());
     }
 
     @Test
-    void atualizaPedido_DeveRetornarStatusCreated() {
+    public void deveConcluirPedidoComSucesso() throws Exception {
+        AtualizaPedidoRequest atualizaPedidoRequest = new AtualizaPedidoRequest();
+        atualizaPedidoRequest.setNumeroPedido(1L);
+        atualizaPedidoRequest.setEtapa(StatusPedido.PRONTO.name());
+        Pedido pedidoAlterado = gerarPedido(StatusPedido.PRONTO.name());
 
-        when(alterarPedidoUseCasePort.execute(any(Pedido.class)))
-                .thenReturn(new Pedido());
+        when(conclusaoPedidoUsePort.execute(pedidoAlterado)).thenReturn(pedidoAlterado);
 
-        ResponseEntity<?> responseEntity = pedidoController.atualizaPedido(any(AtualizaPedidoRequest.class));
+        mockMvc.perform(put("/v1/pedidos/notifica-producao-concluida")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(atualizaPedidoRequest))
+                )
+                .andDo(print())
+                .andExpect(status().isCreated());
 
-        assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
+        verify(conclusaoPedidoUsePort, times(1)).execute(any());
     }
 
+    public static String asJsonString(final Object obj) {
+        try {
+            return new ObjectMapper().writeValueAsString(obj);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

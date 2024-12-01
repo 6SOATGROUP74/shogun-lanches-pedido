@@ -2,48 +2,52 @@ package com.example.demo.core.usecase.impl;
 
 import com.example.demo.adapter.gateway.interfaces.pedido.ListarPedidosAdapterPort;
 import com.example.demo.core.domain.Pedido;
-import org.junit.jupiter.api.BeforeEach;
+import com.example.demo.core.domain.StatusPedido;
+import static com.example.demo.mocks.PedidoHelper.gerarPedido;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import java.util.Arrays;
 
 class ListarPedidosUseCaseTest {
 
-    @Mock
-    ListarPedidosAdapterPort listarPedidosAdapterPort;
+    ListarPedidosAdapterPort listarPedidosAdapterPort = mock(ListarPedidosAdapterPort.class);
+    ListarPedidosUseCase listarPedidosUseCase = new ListarPedidosUseCase(listarPedidosAdapterPort);
 
-    @InjectMocks
-    ListarPedidosUseCase listarPedidosUseCase;
+    @Test
+    public void deveListarPedidosComSucesso(){
+        Pedido pedido = gerarPedido(StatusPedido.EM_PREPARACAO.name());
 
-    @BeforeEach
-    void setup(){
-        MockitoAnnotations.openMocks(this);
+        when(listarPedidosAdapterPort.listarTodosPedidos()).thenReturn(Arrays.asList(pedido));
+
+        listarPedidosUseCase.execute();
+
+        verify(listarPedidosAdapterPort, times(1)).listarTodosPedidos();
     }
 
     @Test
-    void execute_DeveExecutarComSucesso(){
-        when(listarPedidosAdapterPort.listarTodosPedidos()).thenReturn(List.of(new Pedido()));
-        assertDoesNotThrow(() -> listarPedidosUseCase.execute());
+    public void deveListarPedidosOrdenadosComSucesso(){
+        Pedido pedido = gerarPedido(StatusPedido.EM_PREPARACAO.name());
+
+        when(listarPedidosAdapterPort.listarPedidosOrdenados()).thenReturn(Arrays.asList(pedido));
+
+        listarPedidosUseCase.listarOrdenados();
+
+        verify(listarPedidosAdapterPort, times(1)).listarPedidosOrdenados();
     }
 
     @Test
-    void listarOrdenados_DeveExecutarComSucesso(){
-        when(listarPedidosAdapterPort.listarPedidosOrdenados()).thenReturn(List.of(new Pedido()));
-        assertDoesNotThrow(() -> listarPedidosUseCase.listarOrdenados());
+    public void deveListarPorCodReferenciaComSucesso(){
+        Pedido pedido = gerarPedido(StatusPedido.EM_PREPARACAO.name());
+
+        when(listarPedidosAdapterPort.buscarPedidoPorCodReferencia(pedido.getCodReferenciaPedido())).thenReturn(pedido);
+
+        listarPedidosUseCase.listarPorCodReferencia(pedido.getCodReferenciaPedido());
+
+        verify(listarPedidosAdapterPort, times(1)).buscarPedidoPorCodReferencia(anyString());
     }
-
-    @Test
-    void listarPorCodReferencia_DeveExecutarComSucesso(){
-        when(listarPedidosAdapterPort.buscarPedidoPorCodReferencia(anyString())).thenReturn(new Pedido());
-        assertDoesNotThrow(() -> listarPedidosUseCase.listarPorCodReferencia(anyString()));
-    }
-
-
 }

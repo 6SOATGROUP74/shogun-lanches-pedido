@@ -1,58 +1,53 @@
-//package com.example.demo.adapter.gateway.interfaces.impl;
-//
-//import com.example.demo.infrastructure.repository.PedidoRepository;
-//import com.example.demo.infrastructure.repository.entity.PedidoEntity;
-//import org.junit.jupiter.api.BeforeEach;
-//import org.junit.jupiter.api.Test;
-//import org.mockito.InjectMocks;
-//import org.mockito.Mock;
-//import org.mockito.MockitoAnnotations;
-//
-//import java.math.BigDecimal;
-//import java.util.Optional;
-//
-//import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-//import static org.mockito.ArgumentMatchers.anyLong;
-//import static org.mockito.Mockito.when;
-//
-//class BuscarPedidoAdapterTest {
-//
-//    @Mock
-//    private PedidoRepository repository;
-//
-//    @InjectMocks
-//    private BuscarPedidoAdapter buscarPedidoAdapter;
-//
-//    @BeforeEach
-//    void setup(){
-//        MockitoAnnotations.openMocks(this);
-//    }
-//
-//    @Test
-//    void executePedido_NaoDeveRetornarException() {
-//        when(repository.findById(anyLong()))
-//                .thenReturn(Optional.of(new PedidoEntity()));
-//
-//        assertDoesNotThrow(() -> buscarPedidoAdapter.execute(anyLong()));
-//    }
-//
-//    PagamentoEntity buildPagamentoEntity(){
-//
-//        PagamentoEntity pagamento = new PagamentoEntity();
-//        PedidoEntity pedidoEntity = new PedidoEntity();
-//        pedidoEntity.setNumeroPedido(1L);
-//
-//        pagamento.setIdPagamento(1L);
-//        pagamento.setStatus("PAGO");
-//        pagamento.setPedidoEntity(pedidoEntity);
-//        pagamento.setValorTotal(BigDecimal.valueOf(150.75));
-//        pagamento.setTipoDoPagamento("PIX");
-//        pagamento.setDataPagamento("2023-09-21");
-//        pagamento.setCodPagamento("COD123456");
-//        pagamento.setCopiaCola("Copia e Cola Exemplo");
-//        pagamento.setQrCodeLink("https://link-para-qr-code.com");
-//
-//        return pagamento;
-//    }
-//
-//}
+package com.example.demo.adapter.gateway.interfaces.impl;
+
+import com.example.demo.core.domain.Pedido;
+import com.example.demo.core.domain.StatusPedido;
+import com.example.demo.infrastructure.repository.PedidoRepository;
+import com.example.demo.infrastructure.repository.entity.PedidoEntity;
+import static com.example.demo.mocks.PedidoHelper.gerarPedido;
+import static com.example.demo.mocks.PedidoHelper.gerarPedidoEntity;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.NoSuchElementException;
+import java.util.Optional;
+
+class BuscarPedidoAdapterTest {
+
+    PedidoRepository pedidoRepository = mock(PedidoRepository.class);
+    BuscarPedidoAdapter buscarPedidoAdapter = new BuscarPedidoAdapter(pedidoRepository);
+
+    @Test
+    public void deverBuscarPedidoComSucesso() {
+        Long pedidoId = 1L;
+        Pedido pedido = gerarPedido(StatusPedido.EM_PREPARACAO.name());
+        PedidoEntity pedidoEntity = gerarPedidoEntity(StatusPedido.EM_PREPARACAO);
+
+        when(pedidoRepository.findById(pedidoId)).thenReturn(Optional.of(pedidoEntity));
+
+        var result = buscarPedidoAdapter.execute(pedidoId);
+
+        verify(pedidoRepository, times(1)).findById(anyLong());
+        Assertions.assertEquals(pedido.getNumeroPedido(), result.getNumeroPedido());
+    }
+
+    @Test
+    public void deveRetornarExcessaoQuandoNaoEncontrarPedido(){
+        Long pedidoId = 1L;
+        when(pedidoRepository.findById(pedidoId)).thenThrow(new NoSuchElementException("No value present"));
+
+        Pedido result = null;
+        try {
+           result = buscarPedidoAdapter.execute(pedidoId);
+           Assertions.fail();
+        } catch (Exception e) {
+            verify(pedidoRepository, times(1)).findById(anyLong());
+            Assertions.assertNull(result);
+        }
+    }
+}

@@ -23,6 +23,7 @@ public interface PedidoMapper {
     @Mapping(source = "etapa", target = "etapa")
     Pedido mapFrom(AtualizaPedidoRequest atualizaPedidoRequest);
 
+    @Mapping(target = "cliente.idCliente", source = "cliente.idCliente")
     @Mapping(target = "numeroPedido", source = "numeroPedido")
     List<PedidoEntity> mapFrom(List<Pedido> pedidos);
 

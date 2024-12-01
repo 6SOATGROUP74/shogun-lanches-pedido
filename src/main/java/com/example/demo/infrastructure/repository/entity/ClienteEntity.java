@@ -22,7 +22,7 @@ public class ClienteEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_cliente")
-    private String idCliente;
+    private Long idCliente;
 
     @Column(name = "nome")
     private String nome;

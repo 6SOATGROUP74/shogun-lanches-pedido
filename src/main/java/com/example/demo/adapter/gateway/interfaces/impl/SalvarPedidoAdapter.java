@@ -11,15 +11,19 @@ import org.springframework.stereotype.Component;
 @Component
 public class SalvarPedidoAdapter implements SalvarPedidoAdapterPort {
 
-    private final PedidoRepository repository;
+    private final PedidoRepository pedidoRepository;
 
     @Autowired
-    public SalvarPedidoAdapter(PedidoRepository repository) {
-        this.repository = repository;
+    public SalvarPedidoAdapter(PedidoRepository pedidoRepository) {
+        this.pedidoRepository = pedidoRepository;
     }
 
     @Override
     public Pedido execute(Pedido pedido) {
-       return PedidoMapper.INSTANCE.mapFrom(repository.saveAndFlush(PedidoEntityMapper.INSTANCE.mapFrom(pedido)));
+       return PedidoMapper.INSTANCE.mapFrom(
+               pedidoRepository.saveAndFlush(
+                       PedidoEntityMapper.INSTANCE.mapFrom(pedido)
+               )
+       );
     }
 }
