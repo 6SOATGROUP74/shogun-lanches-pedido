@@ -1,54 +1,57 @@
 package com.example.demo.adapter.gateway.interfaces.impl;
 
+import com.example.demo.core.domain.StatusPedido;
 import com.example.demo.infrastructure.repository.PedidoRepository;
 import com.example.demo.infrastructure.repository.entity.PedidoEntity;
-import org.junit.jupiter.api.BeforeEach;
+import static com.example.demo.mocks.PedidoHelper.gerarPedidoEntity;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.anyString;
+import org.mockito.Mockito;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import java.util.Arrays;
+import java.util.List;
 
 class ListarPedidoAdapterTest {
 
-    @Mock
-    private PedidoRepository repository;
+    PedidoRepository pedidoRepository = mock(PedidoRepository.class);
+    ListarPedidoAdapter listarPedidoAdapter = new ListarPedidoAdapter(pedidoRepository);
 
-    @InjectMocks
-    private ListarPedidoAdapter listarPedidoAdapter;
+    @Test
+    public void deveListarTodosPedidosComSucesso(){
+        List<PedidoEntity> pedidoEntityList = Arrays.asList(gerarPedidoEntity(StatusPedido.EM_PREPARACAO));
 
-    @BeforeEach
-    void setup(){
-        MockitoAnnotations.openMocks(this);
+        when(pedidoRepository.findAll()).thenReturn(pedidoEntityList);
+
+        listarPedidoAdapter.listarTodosPedidos();
+
+        verify(pedidoRepository, Mockito.times(1)).findAll();
     }
 
     @Test
-    void listarTodosPedidos_NaoDeveRetornarException() {
-        when(repository.findAll())
-                .thenReturn(List.of(new PedidoEntity()));
+    public void deveListarTodosPedidosOrdenadosComSucesso(){
+        List<PedidoEntity> pedidoEntityList = Arrays.asList(gerarPedidoEntity(StatusPedido.EM_PREPARACAO));
 
-        assertDoesNotThrow(() -> listarPedidoAdapter.listarTodosPedidos());
+        when(pedidoRepository.ordenaPedidos()).thenReturn(pedidoEntityList);
+
+        listarPedidoAdapter.listarPedidosOrdenados();
+
+        verify(pedidoRepository, Mockito.times(1)).ordenaPedidos();
     }
 
     @Test
-    void listarPedidosOrdenados_NaoDeveRetornarException() {
-        when(repository.ordenaPedidos())
-                .thenReturn(List.of(new PedidoEntity()));
+    public void devebuscarPedidoPorCodReferenciaComSucesso(){
+        String codReferencia = "ORDER_123";
+        PedidoEntity pedidoEntity = gerarPedidoEntity(StatusPedido.EM_PREPARACAO);
 
-        assertDoesNotThrow(() -> listarPedidoAdapter.listarPedidosOrdenados());
+        when(pedidoRepository.findByCodReferenciaPedido(codReferencia)).thenReturn(pedidoEntity);
+
+        var result =listarPedidoAdapter.buscarPedidoPorCodReferencia(codReferencia);
+
+        verify(pedidoRepository, Mockito.times(1)).findByCodReferenciaPedido(anyString());
+        Assertions.assertEquals(pedidoEntity.getNumeroPedido(), result.getNumeroPedido());
     }
-
-    @Test
-    void buscarPedidoPorCodReferencia_NaoDeveRetornarException() {
-        when(repository.findByCodReferenciaPedido(anyString()))
-                .thenReturn(new PedidoEntity());
-
-        assertDoesNotThrow(() -> listarPedidoAdapter.buscarPedidoPorCodReferencia(anyString()));
-    }
-
 }

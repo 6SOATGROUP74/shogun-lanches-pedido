@@ -25,8 +25,8 @@ public class PagamentoController {
     private final ShogunPagamentoClient shogunPagamentoClient;
     private final RealizaPamentoAdapterPort realizaPamentoAdapterPort;
 
-    public PagamentoController(ShogunPagamentoClient shogunPagamentoClient, ShogunPagamentoClient shogunPagamentoClient1, RealizaPamentoAdapterPort realizaPamentoAdapterPort) {
-        this.shogunPagamentoClient = shogunPagamentoClient1;
+    public PagamentoController(ShogunPagamentoClient shogunPagamentoClient, RealizaPamentoAdapterPort realizaPamentoAdapterPort) {
+        this.shogunPagamentoClient = shogunPagamentoClient;
         this.realizaPamentoAdapterPort = realizaPamentoAdapterPort;
     }
 

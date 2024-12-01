@@ -18,6 +18,7 @@ public interface PedidoEntityMapper {
     PedidoEntityMapper INSTANCE = Mappers.getMapper(PedidoEntityMapper.class);
 
     @Mapping(target = "dataPedido", expression = "java(dataHoraAtual())")
+    @Mapping(target =  "cliente", source = "cliente")
     PedidoEntity mapFrom(Pedido pedido);
 
     @Mapping(target =  "numeroPedido", source = "pedidoEntity.numeroPedido")

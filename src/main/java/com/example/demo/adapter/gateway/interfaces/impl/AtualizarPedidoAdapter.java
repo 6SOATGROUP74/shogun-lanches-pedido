@@ -13,16 +13,16 @@ import org.springframework.stereotype.Component;
 @Component
 public class AtualizarPedidoAdapter implements AtualizarPedidoAdapterPort {
 
-    private final PedidoRepository repository;
+    private final PedidoRepository pedidoRepository;
 
-    public AtualizarPedidoAdapter(PedidoRepository repository) {
-        this.repository = repository;
+    public AtualizarPedidoAdapter(PedidoRepository pedidoRepository) {
+        this.pedidoRepository = pedidoRepository;
     }
 
     @Override
     public Pedido execute(Pedido pedido) {
         logger.info("m=execute, status=init, msg=Persistindo pedido na base de dados, pedido={}", pedido);
-        Pedido pedidoPersistido = PedidoEntityMapper.INSTANCE.mapFrom(repository.save(PedidoEntityMapper.INSTANCE.updateFrom(pedido)));
+        Pedido pedidoPersistido = PedidoEntityMapper.INSTANCE.mapFrom(pedidoRepository.save(PedidoEntityMapper.INSTANCE.updateFrom(pedido)));
         logger.info("m=execute, status=sucess, msg=Persistindo pedido na base de dados, pedido={}", pedido);
         return pedidoPersistido;
     }

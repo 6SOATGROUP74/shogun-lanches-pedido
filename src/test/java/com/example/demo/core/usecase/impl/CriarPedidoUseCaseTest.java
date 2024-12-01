@@ -1,130 +1,56 @@
 package com.example.demo.core.usecase.impl;
 
 import com.example.demo.adapter.gateway.interfaces.cliente.RecuperarClienteAdapterPort;
+import com.example.demo.adapter.gateway.interfaces.impl.GerenciarProdutoAdapter;
 import com.example.demo.adapter.gateway.interfaces.pedido.BuscarPedidoAdapterPort;
 import com.example.demo.adapter.gateway.interfaces.pedido.SalvarPedidoAdapterPort;
-import com.example.demo.adapter.gateway.interfaces.produto.GerenciarProdutoAdapterPort;
 import com.example.demo.core.domain.Cliente;
-import com.example.demo.core.domain.Composicao;
 import com.example.demo.core.domain.Pedido;
 import com.example.demo.core.domain.Produto;
-import com.example.demo.exceptions.ProdutoNotFoundException;
-import org.junit.jupiter.api.BeforeEach;
+import com.example.demo.core.domain.StatusPedido;
+import static com.example.demo.mocks.PedidoHelper.gerarPedido;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 class CriarPedidoUseCaseTest {
 
-    @Mock
-    SalvarPedidoAdapterPort salvarPedidoAdapterPort;
-
-    @Mock
-    GerenciarProdutoAdapterPort gerenciarProdutoAdapterPort;
-
-    @Mock
-    RecuperarClienteAdapterPort recuperarClienteAdapterPort;
-
-    @Mock
-    BuscarPedidoAdapterPort buscarPedidoAdapterPort;
-
-    @InjectMocks
-    CriarPedidoUseCase criarPedidoUseCase;
-
-    @BeforeEach
-    void setup(){
-        MockitoAnnotations.openMocks(this);
-    }
-
+    SalvarPedidoAdapterPort salvarPedidoAdapterPort = mock(SalvarPedidoAdapterPort.class);
+    GerenciarProdutoAdapter gerenciarProdutoAdapter = mock(GerenciarProdutoAdapter.class);
+    RecuperarClienteAdapterPort recuperarClienteAdapterPort = mock(RecuperarClienteAdapterPort.class);
+    BuscarPedidoAdapterPort buscarPedidoAdapterPort = mock(BuscarPedidoAdapterPort.class);
+    CriarPedidoUseCase criarPedidoUseCase = new CriarPedidoUseCase(salvarPedidoAdapterPort, gerenciarProdutoAdapter, recuperarClienteAdapterPort, buscarPedidoAdapterPort);
 
     @Test
-    void criarPedido_DeveRetornarUmNovoPedido(){
+    public void deveGerarPedidoComSucesso(){
+        Cliente cliente = new Cliente("José da Silva", 1L, "111111111", "jose@gmail.com");
+        Pedido pedido = gerarPedido(null);
+        Pedido pedidoRecebido = gerarPedido(StatusPedido.RECEBIDO.name());
+        Produto produto1 = pedido.getComposicao().get(0).getProduto();
+        Produto produto2 = pedido.getComposicao().get(1).getProduto();
+        Produto produto3 = pedido.getComposicao().get(2).getProduto();
+        Produto produto4 = pedido.getComposicao().get(3).getProduto();
 
-        var pedido = buildPedido();
+        when(gerenciarProdutoAdapter.buscarProdutoPorId(1L)).thenReturn(produto1);
+        when(gerenciarProdutoAdapter.buscarProdutoPorId(2L)).thenReturn(produto2);
+        when(gerenciarProdutoAdapter.buscarProdutoPorId(3L)).thenReturn(produto3);
+        when(gerenciarProdutoAdapter.buscarProdutoPorId(4L)).thenReturn(produto4);
+        when(recuperarClienteAdapterPort.recuperarPorId(cliente.getIdCliente())).thenReturn(cliente);
+        when(salvarPedidoAdapterPort.execute(pedido)).thenReturn(pedidoRecebido);
+        when(buscarPedidoAdapterPort.execute(pedidoRecebido.getNumeroPedido())).thenReturn(pedidoRecebido);
 
-        pedido.getComposicao().forEach(item -> {
-            when(gerenciarProdutoAdapterPort.buscarProdutoPorId(eq(item.getIdProduto()))).thenReturn(buildProduto());
-        });
+        var result = criarPedidoUseCase.criarPedido(pedido);
 
-        when(recuperarClienteAdapterPort.recuperarPorId(anyLong())).thenReturn(buildCliente());
-        when(salvarPedidoAdapterPort.execute(any(Pedido.class))).thenReturn(buildPedido());
-        when(buscarPedidoAdapterPort.execute(anyLong())).thenReturn(buildPedido());
-
-        assertNotNull(criarPedidoUseCase.criarPedido(buildPedido()));
-
-    }
-
-    @Test
-    void criarPedido_DeveLancarExceptionProdutoNotFoundException(){
-
-        var pedido = buildPedido();
-        pedido.getComposicao().add(new Composicao());
-
-        when(gerenciarProdutoAdapterPort.buscarProdutoPorId(anyLong())).thenReturn(null);
-
-        assertThrows(ProdutoNotFoundException.class, () -> {
-            criarPedidoUseCase.criarPedido(pedido);
-        } );
-
-    }
-
-    Cliente buildCliente(){
-        var cliente = new Cliente();
-
-        cliente.setIdCliente(1L);
-        cliente.setDataCadastro("2024-01-01");
-        cliente.setCpf("00000000");
-        cliente.setNome("Igu");
-        cliente.setEmail("email@email.com");
-
-        return cliente;
-    }
-
-    Produto buildProduto(){
-        var produto = new Produto();
-        produto.setIdProduto(1L);
-        produto.setStatus(true);
-        produto.setCategoria("Lanche");
-        produto.setValor(10.1);
-        produto.setQuantidade(1L);
-        produto.setNome("X-TUDAO");
-
-        return produto;
-    }
-
-    Pedido buildPedido(){
-        Cliente cliente = new Cliente();
-        cliente.setNome("John Doe");
-        cliente.setEmail("johndoe@example.com");
-        cliente.setCpf("12345678900");
-
-        List<Composicao> composicoes = new ArrayList<>();
-        var composicao = new Composicao();
-        composicao.setIdProduto(1L);
-        composicoes.add(composicao);
-
-
-        Pedido pedido = new Pedido();
-        pedido.setNumeroPedido(12345L);
-        pedido.setCliente(cliente);
-        pedido.setValorTotal(200.0);
-        pedido.setComposicao(composicoes);
-        pedido.setEtapa("");
-        pedido.setIdPagamento(98765L);
-        pedido.setDataPedido("2024-09-21");
-        pedido.setCodPedido("ABC123");
-        pedido.setCodReferenciaPedido("REF123");
-        pedido.setDataMudancaEtapa("2024-09-22");
-
-        return pedido;
+        verify(gerenciarProdutoAdapter, times(4)).buscarProdutoPorId(anyLong());
+        verify(recuperarClienteAdapterPort, times(1)).recuperarPorId(anyLong());
+        verify(salvarPedidoAdapterPort, times(1)).execute(any());
+        verify(buscarPedidoAdapterPort, times(1)).execute(anyLong());
+        Assertions.assertEquals(pedidoRecebido.getEtapa(), result.getEtapa());
     }
 
 }
