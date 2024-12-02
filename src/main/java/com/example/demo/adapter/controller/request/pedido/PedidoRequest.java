@@ -14,7 +14,7 @@ import java.util.List;
 public class PedidoRequest {
 
     @JsonProperty("id_cliente")
-    private Long idCliente;
+    private String idCliente;
 
     @NotNull(message = "O campo obrigatório")
     private List<ComposicaoRequest> composicao;

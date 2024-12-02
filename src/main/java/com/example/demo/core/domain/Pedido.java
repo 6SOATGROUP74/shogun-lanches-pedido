@@ -5,7 +5,7 @@ import java.util.List;
 public class Pedido {
 
     private Long numeroPedido;
-    private Cliente cliente;
+    private String idCliente;
     private Double valorTotal;
     private List<Composicao> composicao;
     private String etapa;
@@ -14,6 +14,14 @@ public class Pedido {
     private String codPedido;
     private String codReferenciaPedido;
     private String dataMudancaEtapa;
+
+    public String getIdCliente() {
+        return idCliente;
+    }
+
+    public void setIdCliente(String idCliente) {
+        this.idCliente = idCliente;
+    }
 
     public String getDataMudancaEtapa() {
         return dataMudancaEtapa;
@@ -47,13 +55,6 @@ public class Pedido {
         this.numeroPedido = numeroPedido;
     }
 
-    public Cliente getCliente() {
-        return cliente;
-    }
-
-    public void setCliente(Cliente cliente) {
-        this.cliente = cliente;
-    }
 
     public Double getValorTotal() {
         return valorTotal;
@@ -95,19 +96,4 @@ public class Pedido {
         this.dataPedido = dataPedido;
     }
 
-    @Override
-    public String toString() {
-        return "Pedido{" +
-                "numeroPedido=" + numeroPedido +
-                ", cliente=" + cliente +
-                ", valorTotal=" + valorTotal +
-                ", composicao=" + composicao +
-                ", etapa='" + etapa + '\'' +
-                ", idPagamento=" + idPagamento +
-                ", dataPedido='" + dataPedido + '\'' +
-                ", codPedido='" + codPedido + '\'' +
-                ", codReferenciaPedido='" + codReferenciaPedido + '\'' +
-                ", dataMudancaEtapa='" + dataMudancaEtapa + '\'' +
-                '}';
-    }
 }

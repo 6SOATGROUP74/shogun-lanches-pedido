@@ -25,7 +25,6 @@ public class ComposicaoEntity {
     @JoinColumn(name = "numero_pedido")
     private PedidoEntity pedido;
 
-    @ManyToOne(cascade = CascadeType.MERGE)
-    @JoinColumn(name = "id_produto")
-    private ProdutoEntity produto;
+    @Column(name = "id_produto")
+    private Long idProduto;
 }

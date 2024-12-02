@@ -18,11 +18,9 @@ public interface PedidoEntityMapper {
     PedidoEntityMapper INSTANCE = Mappers.getMapper(PedidoEntityMapper.class);
 
     @Mapping(target = "dataPedido", expression = "java(dataHoraAtual())")
-    @Mapping(target =  "cliente", source = "cliente")
     PedidoEntity mapFrom(Pedido pedido);
 
     @Mapping(target =  "numeroPedido", source = "pedidoEntity.numeroPedido")
-    @Mapping(target =  "cliente", source = "pedidoEntity.cliente")
     @Mapping(target =  "valorTotal", source = "pedidoEntity.valorTotal")
     @Mapping(target =  "composicao", source = "pedidoEntity.composicao")
     @Mapping(target =  "idPagamento", source = "pedidoEntity.idPagamento")
@@ -31,6 +29,7 @@ public interface PedidoEntityMapper {
     @Mapping(target =  "codReferenciaPedido", source = "pedidoEntity.codReferenciaPedido")
     @Mapping(target =  "dataMudancaEtapa", source = "pedidoEntity.dataMudancaEtapa")
     Pedido mapFrom(PedidoEntity pedidoEntity);
+
     List<Pedido> mapFrom(List<PedidoEntity> pedidoEntity);
 
     @Mapping(target = "dataMudancaEtapa", expression = "java(dataHoraAtual())")

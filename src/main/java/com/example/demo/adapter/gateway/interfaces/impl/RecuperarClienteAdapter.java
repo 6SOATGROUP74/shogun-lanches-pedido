@@ -3,8 +3,8 @@ package com.example.demo.adapter.gateway.interfaces.impl;
 
 import com.example.demo.core.domain.Cliente;
 import com.example.demo.adapter.gateway.interfaces.cliente.RecuperarClienteAdapterPort;
-import com.example.demo.infrastructure.repository.ClienteRepository;
-import com.example.demo.infrastructure.repository.presenter.ClienteEntityMapper;
+import com.example.demo.infrastructure.integration.shogun.cliente.ClienteMapper;
+import com.example.demo.infrastructure.integration.shogun.cliente.ShogunClienteClient;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -12,16 +12,11 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 public class RecuperarClienteAdapter implements RecuperarClienteAdapterPort {
 
-    private final ClienteRepository clienteRepository;
+    private final ShogunClienteClient client;
 
     @Override
-    public Cliente execute(String documentoCliente) {
-        return ClienteEntityMapper.INSTANCE.mapFrom(clienteRepository.findByCpf(documentoCliente));
-    }
-
-    @Override
-    public Cliente recuperarPorId(Long clientId) {
-        return ClienteEntityMapper.INSTANCE.mapFrom(clienteRepository.findById(clientId).get());
+    public Cliente recuperarPorId(String clientId) {
+        return ClienteMapper.INSTANCE.mapFrom(client.buscaPorId(clientId));
     }
 
 }

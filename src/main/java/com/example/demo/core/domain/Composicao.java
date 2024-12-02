@@ -5,18 +5,8 @@ public class Composicao {
     private Long idComposicao;
     private Long idProduto;
     private String nomeProduto;
-    private String categoria;
     private int quantidade;
     private double precoUnitario;
-    private Produto produto;
-
-    public Produto getProduto() {
-        return produto;
-    }
-
-    public void setProduto(Produto produto) {
-        this.produto = produto;
-    }
 
     public Long getIdProduto() {
         return idProduto;
@@ -42,14 +32,6 @@ public class Composicao {
         this.nomeProduto = nomeProduto;
     }
 
-    public String getCategoria() {
-        return categoria;
-    }
-
-    public void setCategoria(String categoria) {
-        this.categoria = categoria;
-    }
-
     public int getQuantidade() {
         return quantidade;
     }
@@ -72,10 +54,8 @@ public class Composicao {
                 "idComposicao=" + idComposicao +
                 ", idProduto=" + idProduto +
                 ", nomeProduto='" + nomeProduto + '\'' +
-                ", categoria='" + categoria + '\'' +
                 ", quantidade=" + quantidade +
                 ", precoUnitario=" + precoUnitario +
-                ", produto=" + produto +
                 '}';
     }
 }

@@ -1,13 +1,13 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: app-pod
+  name: app-pedido-pod
   labels:
-    app: app-pod
+    app: app-pedido-pod
 spec:
   containers:
-    - name: app-container
+    - name: app-pedido-container
       image: igoryy/fiap-6soat:2
       imagePullPolicy: Always
       ports:
-        - containerPort: 8080
+        - containerPort: 8091
