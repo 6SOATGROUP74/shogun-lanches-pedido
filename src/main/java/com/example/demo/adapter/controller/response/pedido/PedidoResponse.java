@@ -9,7 +9,7 @@ import java.util.List;
 @Getter
 public class PedidoResponse {
     private String numeroPedido;
-    private ClienteResponse cliente;
+    private String idCliente;
     private List<ComposicaoResponse> composicao;
     private String valorTotal;
     private Long idPagamento;

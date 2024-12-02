@@ -1,11 +1,6 @@
 package com.example.demo.adapter.controller;
 
 import com.example.demo.adapter.presenter.error.ErrorDetails;
-import com.example.demo.exceptions.CategoriaInvalidaException;
-import com.example.demo.exceptions.ClienteDuplicadoException;
-import com.example.demo.exceptions.ClienteNotFoundException;
-import com.example.demo.exceptions.PedidoNotFoundException;
-import com.example.demo.exceptions.ProdutoNotFoundException;
 import org.apache.coyote.BadRequestException;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
@@ -49,53 +44,5 @@ public class CustomExceptionHandlers {
         });
         return errors;
     }
-
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(ClienteDuplicadoException.class)
-    public Map<String, String> handle(ClienteDuplicadoException ex) {
-        Map<String, String> errors = new HashMap<>();
-            String errorMessage = ex.getMessage();
-            errors.put("cause", errorMessage);
-        return errors;
-    }
-
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler(ClienteNotFoundException.class)
-    public Map<String, String> handle(ClienteNotFoundException ex) {
-        Map<String, String> errors = new HashMap<>();
-        String errorMessage = ex.getMessage();
-        errors.put("cause", errorMessage);
-        return errors;
-    }
-
-
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(CategoriaInvalidaException.class)
-    public Map<String, String> handle(CategoriaInvalidaException ex) {
-        Map<String, String> errors = new HashMap<>();
-        String errorMessage = ex.getMessage();
-        errors.put("cause", errorMessage);
-        return errors;
-    }
-
-
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler(ProdutoNotFoundException.class)
-    public Map<String, String> handle(ProdutoNotFoundException ex) {
-        Map<String, String> errors = new HashMap<>();
-        String errorMessage = ex.getMessage();
-        errors.put("cause", errorMessage);
-        return errors;
-    }
-
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler(PedidoNotFoundException.class)
-    public Map<String, String> handle(PedidoNotFoundException ex) {
-        Map<String, String> errors = new HashMap<>();
-        String errorMessage = ex.getMessage();
-        errors.put("cause", errorMessage);
-        return errors;
-    }
-
 
 }

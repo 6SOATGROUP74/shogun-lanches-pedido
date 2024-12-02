@@ -3,7 +3,6 @@ package com.example.demo.core.usecase.impl;
 import com.example.demo.core.domain.Cliente;
 import com.example.demo.core.domain.Composicao;
 import com.example.demo.core.domain.Pedido;
-import com.example.demo.exceptions.ProdutoNotFoundException;
 import com.example.demo.core.usecase.interfaces.pedido.CriarPedidoUseCasePort;
 import com.example.demo.adapter.gateway.interfaces.cliente.RecuperarClienteAdapterPort;
 import com.example.demo.adapter.gateway.interfaces.pedido.BuscarPedidoAdapterPort;
@@ -14,7 +13,6 @@ import org.apache.logging.log4j.Logger;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Objects;
 import java.util.UUID;
 
 import static com.example.demo.core.domain.StatusPedido.RECEBIDO;

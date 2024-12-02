@@ -19,11 +19,11 @@ class SalvarPedidoAdapterTest {
     SalvarPedidoAdapter salvarPedidoAdapter = new SalvarPedidoAdapter(pedidoRepository);
 
     @Test
-    public void deveSalvarPedidoComSucesso(){
+    void deveSalvarPedidoComSucesso(){
         Pedido pedido = gerarPedido(StatusPedido.EM_PREPARACAO.name());
         PedidoEntity pedidoEntity = gerarPedidoEntity(StatusPedido.EM_PREPARACAO);
 
-        when(pedidoRepository.saveAndFlush(pedidoEntity)).thenReturn(pedidoEntity);
+        when(pedidoRepository.saveAndFlush(any(PedidoEntity.class))).thenReturn(pedidoEntity);
 
         var result = salvarPedidoAdapter.execute(pedido);
 

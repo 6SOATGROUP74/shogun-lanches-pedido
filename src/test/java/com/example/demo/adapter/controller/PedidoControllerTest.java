@@ -66,7 +66,7 @@ class PedidoControllerTest {
     AutoCloseable openMocks;
 
     @Test
-    public void deveListarPedidosComSucesso() throws Exception {
+    void deveListarPedidosComSucesso() throws Exception {
         Pedido pedido = gerarPedido(StatusPedido.EM_PREPARACAO.name());
 
         when(listarPedidosUseCasePort.listarOrdenados()).thenReturn(List.of(pedido));
@@ -81,11 +81,11 @@ class PedidoControllerTest {
 
 
     @Test
-    public void deveSalvarPedidoComSucesso() throws Exception {
+    void deveSalvarPedidoComSucesso() throws Exception {
         Pedido pedido = gerarPedido(StatusPedido.RECEBIDO.name());
         PedidoRequest pedidoRequest = gerarPedidoRequest();
 
-        when(criarPedidoUseCasePort.criarPedido(pedido)).thenReturn(pedido);
+        when(criarPedidoUseCasePort.criarPedido(any(Pedido.class))).thenReturn(pedido);
 
         mockMvc.perform(post("/v1/pedidos")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -98,7 +98,7 @@ class PedidoControllerTest {
     }
 
     @Test
-    public void deveAtualizarPedidoComSucesso() throws Exception {
+    void deveAtualizarPedidoComSucesso() throws Exception {
         Pedido pedido = gerarPedido(StatusPedido.RECEBIDO.name());
         Pedido pedidoAlterado = gerarPedido(StatusPedido.EM_PREPARACAO.name());
         PedidoRequest pedidoRequest = gerarPedidoRequest();
@@ -119,7 +119,7 @@ class PedidoControllerTest {
     }
 
     @Test
-    public void deveEnviarPedidoComSucesso() throws Exception {
+    void deveEnviarPedidoComSucesso() throws Exception {
         ProducaoRequest producaoRequest = new ProducaoRequest();
         producaoRequest.setNumeroPedido(1L);
         producaoRequest.setIdPagamento(1L);
@@ -138,7 +138,7 @@ class PedidoControllerTest {
     }
 
     @Test
-    public void deveConcluirPedidoComSucesso() throws Exception {
+    void deveConcluirPedidoComSucesso() throws Exception {
         AtualizaPedidoRequest atualizaPedidoRequest = new AtualizaPedidoRequest();
         atualizaPedidoRequest.setNumeroPedido(1L);
         atualizaPedidoRequest.setEtapa(StatusPedido.PRONTO.name());
@@ -154,6 +154,21 @@ class PedidoControllerTest {
                 .andExpect(status().isCreated());
 
         verify(conclusaoPedidoUsePort, times(1)).execute(any());
+    }
+
+    @Test
+    void deveLancarException_QuandoComposicaoForNullo() throws Exception {
+
+        PedidoRequest pedidoRequest = gerarPedidoRequest();
+        pedidoRequest.setComposicao(null);
+
+        mockMvc.perform(post("/v1/pedidos")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(pedidoRequest))
+                )
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+
     }
 
     public static String asJsonString(final Object obj) {
