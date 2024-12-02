@@ -6,7 +6,4 @@ public class ClienteNotFoundException extends RuntimeException {
         super(message);
     };
 
-    public ClienteNotFoundException(final String message, final Throwable cause){
-        super(message, cause);
-    };
 }

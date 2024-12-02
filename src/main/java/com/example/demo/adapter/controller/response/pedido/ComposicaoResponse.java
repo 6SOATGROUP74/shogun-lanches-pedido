@@ -19,8 +19,6 @@ public class ComposicaoResponse {
     @JsonProperty("nome_produto")
     private String nomeProduto;
 
-    private String categoria;
-
     @JsonProperty("preco_unitario")
     private double precoUnitario;
 }
