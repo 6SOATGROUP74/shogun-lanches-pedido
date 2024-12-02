@@ -42,10 +42,7 @@ public class CriarPedidoUseCase implements CriarPedidoUseCasePort {
         pedido.getComposicao().forEach(item -> {
 
             var auxProduto = gerenciarProdutoAdapterPort.buscarProdutoPorId(item.getIdProduto());
-            if(Objects.isNull(auxProduto) || !auxProduto.isStatus()){
-                throw new ProdutoNotFoundException("Produto nao localizado na base ou inativo");
-            }
-            item.setCategoria(auxProduto.getCategoria());
+
             item.setPrecoUnitario(auxProduto.getValor());
             item.setNomeProduto(auxProduto.getNome());
             item.setIdProduto(auxProduto.getIdProduto());
@@ -62,8 +59,8 @@ public class CriarPedidoUseCase implements CriarPedidoUseCasePort {
         pedido.setEtapa(RECEBIDO.name());
         pedido.setDataMudancaEtapa(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 
-        Cliente cliente = recuperarClienteAdapterPort.recuperarPorId(pedido.getCliente().getIdCliente());
-        pedido.setCliente(cliente);
+        Cliente cliente = recuperarClienteAdapterPort.recuperarPorId(pedido.getIdCliente());
+        pedido.setIdCliente(cliente.getIdCliente());
         Pedido pedidoCriado = salvarPedidoAdapterPort.execute(pedido);
 
         logger.info("m=criarPedido, status=success, msg=Pedido criado com sucesso, pedido={}", pedido);

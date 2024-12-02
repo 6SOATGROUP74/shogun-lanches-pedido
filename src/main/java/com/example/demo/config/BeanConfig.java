@@ -1,6 +1,5 @@
 package com.example.demo.config;
 
-import com.example.demo.adapter.gateway.interfaces.cliente.IncluirClienteAdapterPort;
 import com.example.demo.adapter.gateway.interfaces.cliente.RecuperarClienteAdapterPort;
 import com.example.demo.adapter.gateway.interfaces.pedido.AtualizarPedidoAdapterPort;
 import com.example.demo.adapter.gateway.interfaces.pedido.BuscarPedidoAdapterPort;
@@ -11,12 +10,9 @@ import com.example.demo.core.usecase.impl.AlterarPedidoUseCase;
 import com.example.demo.core.usecase.impl.BuscarPedidoUseCase;
 import com.example.demo.core.usecase.impl.ConclusaoPedidoUserCase;
 import com.example.demo.core.usecase.impl.CriarPedidoUseCase;
-import com.example.demo.core.usecase.impl.GerenciarProdutoUseCase;
-import com.example.demo.core.usecase.impl.IncluirClienteUseCase;
 import com.example.demo.core.usecase.impl.ListarPedidosUseCase;
 import com.example.demo.core.usecase.impl.RecuperarClienteUseCase;
 import com.example.demo.core.usecase.impl.SalvarPedidoUseCase;
-import com.example.demo.core.usecase.interfaces.cliente.IncluirClienteUseCasePort;
 import com.example.demo.core.usecase.interfaces.cliente.RecuperarClienteUseCasePort;
 import com.example.demo.core.usecase.interfaces.pedido.AlterarPedidoUseCasePort;
 import com.example.demo.core.usecase.interfaces.pedido.BuscarPedidoUseCasePort;
@@ -33,13 +29,6 @@ import org.springframework.context.annotation.Configuration;
 public class BeanConfig {
 
     @Bean
-    public IncluirClienteUseCasePort incluirClienteUseCasePort(IncluirClienteAdapterPort incluirClienteAdapterPort,
-                                                               RecuperarClienteAdapterPort recuperarClienteAdapterPort
-                                                               ) {
-        return new IncluirClienteUseCase(recuperarClienteAdapterPort, incluirClienteAdapterPort);
-    }
-
-    @Bean
     public RecuperarClienteUseCasePort recuperarClienteUseCasePort(RecuperarClienteAdapterPort recuperarClienteAdapterPort) {
         return new RecuperarClienteUseCase(recuperarClienteAdapterPort);
     }
@@ -54,10 +43,6 @@ public class BeanConfig {
         return new SalvarPedidoUseCase(salvarPedidoAdapterPort);
     }
 
-    @Bean
-    public GerenciarProdutoUseCasePort incluirProdutoUseCasePort(GerenciarProdutoAdapterPort gerenciarProdutoAdapterPort) {
-        return new GerenciarProdutoUseCase(gerenciarProdutoAdapterPort);
-    }
 
     @Bean
     public AlterarPedidoUseCasePort alterarPedidoUseCasePort(AtualizarPedidoAdapterPort atualizarPedidoAdapterPort, BuscarPedidoUseCasePort buscarPedidoUseCasePort){

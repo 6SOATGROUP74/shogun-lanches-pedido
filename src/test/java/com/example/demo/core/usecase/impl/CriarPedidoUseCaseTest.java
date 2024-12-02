@@ -11,8 +11,11 @@ import com.example.demo.core.domain.StatusPedido;
 import static com.example.demo.mocks.PedidoHelper.gerarPedido;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+
+import java.util.UUID;
+
+import static com.example.demo.mocks.PedidoHelper.gerarProduto;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -28,26 +31,20 @@ class CriarPedidoUseCaseTest {
 
     @Test
     public void deveGerarPedidoComSucesso(){
-        Cliente cliente = new Cliente("José da Silva", 1L, "111111111", "jose@gmail.com");
+        Cliente cliente = new Cliente("José da Silva", UUID.randomUUID().toString(), "111111111", "jose@gmail.com", "2024-01-01");
         Pedido pedido = gerarPedido(null);
+        pedido.setIdCliente(UUID.randomUUID().toString());
         Pedido pedidoRecebido = gerarPedido(StatusPedido.RECEBIDO.name());
-        Produto produto1 = pedido.getComposicao().get(0).getProduto();
-        Produto produto2 = pedido.getComposicao().get(1).getProduto();
-        Produto produto3 = pedido.getComposicao().get(2).getProduto();
-        Produto produto4 = pedido.getComposicao().get(3).getProduto();
 
-        when(gerenciarProdutoAdapter.buscarProdutoPorId(1L)).thenReturn(produto1);
-        when(gerenciarProdutoAdapter.buscarProdutoPorId(2L)).thenReturn(produto2);
-        when(gerenciarProdutoAdapter.buscarProdutoPorId(3L)).thenReturn(produto3);
-        when(gerenciarProdutoAdapter.buscarProdutoPorId(4L)).thenReturn(produto4);
-        when(recuperarClienteAdapterPort.recuperarPorId(cliente.getIdCliente())).thenReturn(cliente);
+        when(gerenciarProdutoAdapter.buscarProdutoPorId(anyLong())).thenReturn(gerarProduto());
+        when(recuperarClienteAdapterPort.recuperarPorId(anyString())).thenReturn(cliente);
         when(salvarPedidoAdapterPort.execute(pedido)).thenReturn(pedidoRecebido);
         when(buscarPedidoAdapterPort.execute(pedidoRecebido.getNumeroPedido())).thenReturn(pedidoRecebido);
 
         var result = criarPedidoUseCase.criarPedido(pedido);
 
         verify(gerenciarProdutoAdapter, times(4)).buscarProdutoPorId(anyLong());
-        verify(recuperarClienteAdapterPort, times(1)).recuperarPorId(anyLong());
+        verify(recuperarClienteAdapterPort, times(1)).recuperarPorId(any());
         verify(salvarPedidoAdapterPort, times(1)).execute(any());
         verify(buscarPedidoAdapterPort, times(1)).execute(anyLong());
         Assertions.assertEquals(pedidoRecebido.getEtapa(), result.getEtapa());

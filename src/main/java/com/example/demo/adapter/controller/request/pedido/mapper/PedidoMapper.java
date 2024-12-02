@@ -15,7 +15,6 @@ public interface PedidoMapper {
 
     PedidoMapper INSTANCE = Mappers.getMapper(PedidoMapper.class);
 
-    @Mapping(source = "idCliente", target = "cliente.idCliente")
     @Mapping(source = "composicao", target = "composicao")
     Pedido mapFrom(PedidoRequest pedidoRequest);
 
@@ -23,15 +22,9 @@ public interface PedidoMapper {
     @Mapping(source = "etapa", target = "etapa")
     Pedido mapFrom(AtualizaPedidoRequest atualizaPedidoRequest);
 
-    @Mapping(target = "cliente.idCliente", source = "cliente.idCliente")
-    @Mapping(target = "numeroPedido", source = "numeroPedido")
+
     List<PedidoEntity> mapFrom(List<Pedido> pedidos);
 
-    @Mapping(target = "numeroPedido", source = "numeroPedido")
-    @Mapping(target = "cliente.idCliente", source = "cliente.idCliente")
-    @Mapping(target = "cliente.nome", source = "cliente.nome")
-    @Mapping(target = "cliente.cpf", source = "cliente.cpf")
-    @Mapping(target = "cliente.email", source = "cliente.email")
     @Mapping(target = "valorTotal", source = "valorTotal")
     @Mapping(target = "etapa", source = "etapa")
     @Mapping(target = "idPagamento", source = "idPagamento")

@@ -15,12 +15,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 @FeignClient(name = "ShogunPagamentoClient", url = "${shogun.lanches.pagamento.url}")
 public interface ShogunPagamentoClient {
 
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/v1/pagamento", consumes = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<PagamentoResponse> realizarPagamento(@RequestBody PagamentoRequest pagamentoRequest);
 
-    @GetMapping(value = "/{pagamentoId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/v1/pagamento/{pagamentoId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<PagamentoResponse> consultaStatusPagamento(@PathVariable Long pagamentoId);
 
-    @PostMapping(value = "/confirma-pagamento/{pagamentoId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/v1/pagamento/confirma-pagamento/{pagamentoId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<PagamentoResponse> confirmaPagamento(@PathVariable Long pagamentoId);
 }

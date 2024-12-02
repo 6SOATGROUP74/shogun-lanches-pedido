@@ -61,27 +61,14 @@ jobs:
         run: |
           mvn sonar:sonar \
           -Dsonar.token=${{ secrets.SONAR_TOKEN }} \
-          -Dsonar.projectKey=6SOATGROUP74_shogun-lanches-challenge \
+          -Dsonar.projectKey=6SOATGROUP74_shogun-lanches-pedido \
           -Dsonar.organization=shogun-lanches \
           -Dsonar.host.url=https://sonarcloud.io \
           -Dsonar.qualitygate.wait=true \
           -Dsonar.sources=src/main \
           -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml \
-          -Dsonar.branch.name=${GITHUB_REFrefs/heads/} \
-          -Dsonar.branch.target=main \
-          -Dsonar.exclusions=\
-          com/example/demo/core/domain/*,\
-          com/example/demo/adapter/controller/CustomExceptionHandlers.class,\
-          com/example/demo/adapter/controller/response/**,\
-          com/example/demo/adapter/controller/request/**,\
-          com/example/demo/config/*,\
-          com/example/demo/infrastructure/integration/pagbank/request/*,\
-          com/example/demo/infrastructure/integration/pagbank/response/*,\
-          com/example/demo/infrastructure/integration/pagbank/presenter/*,\
-          com/example/demo/adapter/presenter/**,\
-          com/example/demo/exceptions/*,\
-          com/example/demo/infrastructure/repository/entity/*,\
-          com/example/demo/infrastructure/repository/presenter/*
+          -Dsonar.branch.name=${GITHUB_REF#refs/heads/} \
+          -Dsonar.branch.target=main 
 
   create-pr:
     needs: [build, test, sonarcloud]
@@ -89,20 +76,20 @@ jobs:
     if: success()
 
     steps:
-    - name: Checkout source code
-      uses: actions/checkout@v3
+      - name: Checkout source code
+        uses: actions/checkout@v3
 
-    - name: Configure Git
-      run: |
-        git config --global user.name 'github-actions[bot]'
-        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+      - name: Configure Git
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
 
-    - name: Create Pull Request to develop
-      uses: peter-evans/create-pull-request@v7
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        branch: ${{ github.ref }}
-        base: main
-        title: 'PR : Aberto via actions'
-        body: 'Bora Brasil !!!.'
+      - name: Create Pull Request to develop
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}
+          base: main
+          title: 'PR : Aberto via actions'
+          body: 'Bora Brasil !!!.'
 

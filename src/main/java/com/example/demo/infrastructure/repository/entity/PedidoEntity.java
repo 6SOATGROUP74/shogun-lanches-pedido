@@ -38,9 +38,8 @@ public class PedidoEntity {
     @Column(name = "data_mudanca_etapa")
     private String dataMudancaEtapa;
 
-    @OneToOne
-    @JoinColumn(name = "id_cliente")
-    private ClienteEntity cliente;
+    @Column(name = "id_cliente")
+    private String idCliente;
 
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ComposicaoEntity> composicao;

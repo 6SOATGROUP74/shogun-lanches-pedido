@@ -1,6 +1,10 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: app-pagamento-configmap
+  name: app-pedido-configmap
 data:
-  MYSQL_URL: jdbc:mysql://shogun-database.clehkuwl1rmr.us-east-1.rds.amazonaws.com:3306/db_soat?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
+  MYSQL_URL: jdbc:mysql://shogun-pedido-database.crax9dqhkq1j.us-east-1.rds.amazonaws.com:3306/db_soat_pedido?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
+  URL_PAGAMENTO: http://afd2de0350d4f4555aa7f43155800448-784167804.us-east-1.elb.amazonaws.com
+  URL_PRODUTO: http://abb0e70949f7641d7a85f672cd40ce01-340061676.us-east-1.elb.amazonaws.com
+  URL_CLIENTE: http://a209ee87e36984dc187953e81d076746-1487329173.us-east-1.elb.amazonaws.com
+
