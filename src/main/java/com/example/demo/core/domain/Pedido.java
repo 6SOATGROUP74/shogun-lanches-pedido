@@ -96,18 +96,4 @@ public class Pedido {
         this.dataPedido = dataPedido;
     }
 
-    @Override
-    public String toString() {
-        return "Pedido{" +
-                "numeroPedido=" + numeroPedido +
-                ", valorTotal=" + valorTotal +
-                ", composicao=" + composicao +
-                ", etapa='" + etapa + '\'' +
-                ", idPagamento=" + idPagamento +
-                ", dataPedido='" + dataPedido + '\'' +
-                ", codPedido='" + codPedido + '\'' +
-                ", codReferenciaPedido='" + codReferenciaPedido + '\'' +
-                ", dataMudancaEtapa='" + dataMudancaEtapa + '\'' +
-                '}';
-    }
 }

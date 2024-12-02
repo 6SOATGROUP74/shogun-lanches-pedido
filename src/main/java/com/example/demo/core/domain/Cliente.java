@@ -8,14 +8,6 @@ public class Cliente {
     private String email;
     private String dataCadastro;
 
-    public Cliente(String email, String idCliente, String nome, String cpf, String dataCadastro) {
-        this.email = email;
-        this.idCliente = idCliente;
-        this.nome = nome;
-        this.cpf = cpf;
-        this.dataCadastro = dataCadastro;
-    }
-
     public Cliente() {
     }
 
