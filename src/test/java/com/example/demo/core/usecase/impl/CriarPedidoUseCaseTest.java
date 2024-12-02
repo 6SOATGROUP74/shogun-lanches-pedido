@@ -32,10 +32,7 @@ class CriarPedidoUseCaseTest {
     @Test
     void deveGerarPedidoComSucesso(){
         Cliente cliente = new Cliente();
-        cliente.setEmail("igor@igor.com");
-        cliente.setCpf("48265391864");
         cliente.setIdCliente(UUID.randomUUID().toString());
-        cliente.setNome("igu");
 
 
         Pedido pedido = gerarPedido(null);

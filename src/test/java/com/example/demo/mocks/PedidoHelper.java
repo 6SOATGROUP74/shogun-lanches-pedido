@@ -23,10 +23,7 @@ public class PedidoHelper {
     public static Pedido gerarPedido(String etapa) {
         Cliente cliente = new Cliente();
 
-        cliente.setEmail("igor@igor.com");
-        cliente.setCpf("48265391864");
         cliente.setIdCliente(UUID.randomUUID().toString());
-        cliente.setNome("igu");
 
         Produto produto1 = new Produto();
         produto1.setNome("Hamburguer da casa");

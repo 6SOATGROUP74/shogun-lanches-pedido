@@ -31,8 +31,6 @@ class RecuperarClienteUseCaseTest {
 
         Cliente mockCliente = new Cliente();
         mockCliente.setIdCliente(clienteId);
-        mockCliente.setNome("Cliente Teste");
-        mockCliente.setEmail("cliente@teste.com");
 
         when(recuperarClienteAdapterPort.recuperarPorId(anyString())).thenReturn(mockCliente);
 
@@ -41,8 +39,6 @@ class RecuperarClienteUseCaseTest {
         // Assert
         assertThat(resultado).isNotNull();
         assertThat(resultado.getIdCliente()).isEqualTo(clienteId);
-        assertThat(resultado.getNome()).isEqualTo("Cliente Teste");
-        assertThat(resultado.getEmail()).isEqualTo("cliente@teste.com");
 
         verify(recuperarClienteAdapterPort, times(1)).recuperarPorId(clienteId);
     }
