@@ -14,15 +14,8 @@ public class ProdutoResponse {
         return idProduto;
     }
 
-    public void setIdProduto(Long idProduto) {
-        this.idProduto = idProduto;
-    }
-
     public BigDecimal getValor() {
         return valor;
     }
 
-    public void setValor(BigDecimal valor) {
-        this.valor = valor;
-    }
 }

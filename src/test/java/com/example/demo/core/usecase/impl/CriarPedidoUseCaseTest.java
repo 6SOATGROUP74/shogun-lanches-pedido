@@ -30,7 +30,7 @@ class CriarPedidoUseCaseTest {
     CriarPedidoUseCase criarPedidoUseCase = new CriarPedidoUseCase(salvarPedidoAdapterPort, gerenciarProdutoAdapter, recuperarClienteAdapterPort, buscarPedidoAdapterPort);
 
     @Test
-    public void deveGerarPedidoComSucesso(){
+    void deveGerarPedidoComSucesso(){
         Cliente cliente = new Cliente("José da Silva", UUID.randomUUID().toString(), "111111111", "jose@gmail.com", "2024-01-01");
         Pedido pedido = gerarPedido(null);
         pedido.setIdCliente(UUID.randomUUID().toString());
