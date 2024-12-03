@@ -16,7 +16,7 @@ public class DefinicaoPassos {
 
     private Response response;
 
-    private String ENDPOINT_PEDIDOS = "http://localhost:8091/v1/pedidos";
+    private String ENDPOINT_PEDIDOS = "http://aaee0159130324015bc35e26fe67c6a8-984293553.us-east-1.elb.amazonaws.com/v1/pedidos";
 
     @Quando("for solicitação a requisição de listagem")
     public void um_recebimento_de_uma_solicitação_de_pedidos() {
