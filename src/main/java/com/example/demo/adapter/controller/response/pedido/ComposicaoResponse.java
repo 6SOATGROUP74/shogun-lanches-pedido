@@ -16,6 +16,8 @@ public class ComposicaoResponse {
 
     private int quantidade;
 
+    private String categoria;
+
     @JsonProperty("nome_produto")
     private String nomeProduto;
 
