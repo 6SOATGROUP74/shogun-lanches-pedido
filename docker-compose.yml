@@ -28,7 +28,7 @@ services:
       - "3307:3306"
     environment:
       MYSQL_ROOT_PASSWORD: user_main
-      MYSQL_DATABASE: db_soat
+      MYSQL_DATABASE: db_soat_pedido
       MYSQL_USER: user_main
       MYSQL_PASSWORD: user_main
     volumes:
