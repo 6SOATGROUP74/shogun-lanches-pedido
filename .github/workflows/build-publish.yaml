@@ -103,6 +103,9 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
+          build-args: |
+            AWS_ACCESS_KEY2=${{ secrets.AWS_ACCESS_KEY2 }}
+            AWS_SECRET_ACCESS2=${{ secrets.AWS_SECRET_ACCESS2 }}
           push: true
           tags: 6soatgroup74/shogun-lanches-pedido:prod
 
@@ -119,6 +122,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Update kube config
